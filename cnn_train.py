@@ -1,4 +1,6 @@
 import os
+import random
+import numpy as np
 import matplotlib.pyplot as plt
 from PIL import Image
 import tensorflow as tf
@@ -7,6 +9,12 @@ from tensorflow.keras.models import Sequential
 from tensorflow.keras.layers import Conv2D, MaxPooling2D, Flatten, Dense, Dropout
 from tensorflow.keras.callbacks import EarlyStopping, ReduceLROnPlateau
 from tensorflow.keras import optimizers
+
+# Set the random seed for reproducibility
+seed = 42
+random.seed(seed)
+np.random.seed(seed)
+tf.random.set_seed(seed)
 
 # Set image dimensions and parameters
 img_width, img_height = 224, 224  # Resize images to 224x224
@@ -64,14 +72,16 @@ train_set = train_datagen.flow_from_directory(
     'datasets/resized_train/',  # Use the resized images directory
     target_size=(img_width, img_height),
     batch_size=batch_size,
-    class_mode='binary'
+    class_mode='binary',
+    seed=seed  # Set the seed for reproducibility
 )
 
 validation_set = validation_datagen.flow_from_directory(
     'datasets/resized_validation/',  # Use the resized validation images directory
     target_size=(img_width, img_height),
     batch_size=batch_size,
-    class_mode='binary'
+    class_mode='binary',
+    seed=seed  # Set the seed for reproducibility
 )
 
 # Define the CNN model

@@ -12,6 +12,7 @@ import pandas as pd
 import os
 from tqdm import tqdm
 from PIL import Image
+import random
 
 # Define default hyperparameters
 default_params = {
@@ -22,11 +23,20 @@ default_params = {
 }
 
 def main():
+    # Fix random seed for reproducibility
+    random_seed = 42
+    random.seed(random_seed)
+    np.random.seed(random_seed)
+    torch.manual_seed(random_seed)
+    if torch.cuda.is_available():
+        torch.cuda.manual_seed_all(random_seed)
+    torch.backends.cudnn.deterministic = True
+    torch.backends.cudnn.benchmark = False
 
     os.makedirs('plots', exist_ok=True)
     os.makedirs('reports', exist_ok=True)
 
-    #Set Up Data Preprocessing without Data Augmentation
+    # Set Up Data Preprocessing without Data Augmentation
     data_transforms = {
         'train': transforms.Compose([
             transforms.Resize((224, 224)),
@@ -113,7 +123,7 @@ def main():
     num_epochs = default_params['num_epochs']
     patience = default_params['patience']
 
-    #Load Data with the specified Batch Size
+    # Load Data with the specified Batch Size
     dataloaders = {
         'train': torch.utils.data.DataLoader(
             image_datasets['train'], batch_size=batch_size, shuffle=True, num_workers=8, pin_memory=True
@@ -129,7 +139,7 @@ def main():
         ),
     }
 
-    # Load Pretrained ResNet Model and Modify ffc layer
+    # Load Pretrained ResNet Model and Modify fc layer
     model_ft = models.resnet152(pretrained=True)
     for param in model_ft.parameters():
         param.requires_grad = False
@@ -186,7 +196,7 @@ def main():
     print("\nEvaluating on Test Set:")
     evaluate_model(model_ft, dataloaders['test'], device, class_names, dataset_type='Test')
 
-    # Predict on test2 dataset and save results to excel
+    # Predict on test2 dataset and save results to Excel
     print("\nPredicting on test2 Dataset:")
     predict_test2(model_ft, dataloaders['test2'], device, class_to_label)
 

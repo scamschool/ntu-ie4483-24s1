@@ -12,6 +12,16 @@ import pandas as pd
 import os
 from tqdm import tqdm
 from PIL import Image
+import random
+
+def fix_random_seed(seed=42):
+    random.seed(seed)
+    np.random.seed(seed)
+    torch.manual_seed(seed)
+    if torch.cuda.is_available():
+        torch.cuda.manual_seed_all(seed)
+    torch.backends.cudnn.deterministic = True
+    torch.backends.cudnn.benchmark = False
 
 default_params = {
     'learning_rate': 0.001,
@@ -21,6 +31,8 @@ default_params = {
 }
 
 def main():
+    fix_random_seed(42)
+
     os.makedirs('plots', exist_ok=True)
     os.makedirs('reports', exist_ok=True)
 
@@ -127,7 +139,7 @@ def main():
         ),
     }
 
-    # Load pretrained ResNet model and modify ffc
+    # Load pretrained ResNet model and modify final fully connected layer
     model_ft = models.resnet152(pretrained=True)
     for param in model_ft.parameters():
         param.requires_grad = False

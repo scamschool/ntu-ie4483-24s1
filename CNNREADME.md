@@ -28,7 +28,7 @@ git clone https://github.com/scamschool/ntu-ie4483-24s1.git
 
 ### 4. Organize the Dataset
 Make sure the dataset is having the expected structure of the train.py script. The data structure is as shown below:
-
+```bash
 ├── data/
 │   ├── train/
 │   │   ├── cats/
@@ -36,7 +36,7 @@ Make sure the dataset is having the expected structure of the train.py script. T
 │   ├── validation/
 │   │   ├── cats/
 │   │   └── dogs/
-
+```
 Place the training images of cats in the train/cats/ and validation images of cats in the validation/cats/ directories.
 Place the training images of dogs in the train/dogs/ and validation images of dogs in the validation/dogs/ directories.
 
